@@ -1,8 +1,15 @@
 import { Outlet, type RouteObject } from "react-router-dom";
-import Products from "../pages/products/Products";
-import Home from "../pages/home/Home";
-import Category from "../pages/category/Category";
-import NotFound from "../pages/notFound/NotFound";
+import { lazy } from "react";
+
+const Products = lazy(() => import("../pages/products/Products"))
+
+const Home = lazy(() => import("../pages/home/Home"))
+
+const Category = lazy(() => import("../pages/category/Category"))
+
+const NotFound = lazy(() => import("../pages/notFound/NotFound"))
+
+const Detail = lazy(() => import("../pages/detail/Detail"))
 
 export const routes: RouteObject[] = [
     {
@@ -18,6 +25,9 @@ export const routes: RouteObject[] = [
             {
                 path: "category", element: <Category />
             },
+            {
+                path: "detail/:id", element: <Detail />
+            }
         ]
     },
     {

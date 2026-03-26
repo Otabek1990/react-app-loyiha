@@ -1,115 +1,160 @@
-import { useState, type SubmitEvent } from "react"
-import { toast } from "react-toastify"
-import CardMaps from "../../components/maps/CardMaps"
-import { nanoid } from "nanoid"
-
+import { useState, useEffect, type SubmitEvent} from "react";
+import { toast } from "react-toastify";
+import CardMaps from "../../components/maps/CardMaps";
+import { nanoid } from "nanoid";
+import Modal from "../../components/modal/Modal";
 
 export interface IProducts {
-    id: string,
-    productsName: string,
-    category: string,
-    price: number,
-    description: string,
-    createdAt: Date,
-    updatedAt: Date
+    id: string;
+    productsName: string;
+    categoryId: string;
+    price: number;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 function Products() {
+    const [nomi, setNomi] = useState<string>("");
+    const [categoryId, setCategoryId] = useState<string>("");
+    const [price, setPrice] = useState<number>(0);
+    const [description, setDescription] = useState<string>("");
+    const [createdAt, setCreatedAt] = useState<string>("");
+    const [updatedAt, setUpdatedAt] = useState<string>("");
+    const [showModal, setSHowmodal] = useState<boolean>(false)
+    const [products, setProducts] = useState<IProducts[]>([]);
 
-
-    const [products, setProducts] = useState<IProducts[]>([])
+    const [modalCardId, setCardModalId] = useState<string>("")
 
     const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const form = new FormData(event.currentTarget)
-        const dataObj = Object.fromEntries(form.entries())
+        event.preventDefault();
 
-        const newProduct: IProducts = {
-            id: String(nanoid()),
-            productsName: String(dataObj.productsName),
-            category: String(dataObj.category),
-            price: Number(dataObj.price),
-            description: String(dataObj.description),
-            createdAt: new Date(String(dataObj.createdAt)),
-            updatedAt: new Date(String(dataObj.updatedAt))
+        const dataObj: IProducts = {
+            id: nanoid(),
+            productsName: nomi,
+            categoryId: categoryId,
+            price: Number(price),
+            description: description,
+            createdAt: new Date(createdAt),
+            updatedAt: new Date(updatedAt),
+        };
 
-        }
-        setProducts([...products, newProduct])
-        localStorage.setItem("products", JSON.stringify(products))
-        toast.success("mahsulot muvaffaqiyatli qo'shildi!")
+        const updatedProducts = [...products, dataObj];
 
+        setProducts(updatedProducts);
+        localStorage.setItem("storagerProducts", JSON.stringify(updatedProducts));
+
+        toast.success("Mahsulot muvaffaqiyatli qo'shildi!");
+
+        setNomi("");
+        setCategoryId("");
+        setPrice(0);
+        setDescription("");
+        event.currentTarget.reset();
+    };
+
+    const handlerDelete = (id: string) => {
+
+        const updetedProducts = products.filter((item) => item.id !== id)
+        setProducts(updetedProducts)
 
     }
 
-
+    useEffect(() => {
+        const saved = JSON.parse(localStorage.getItem("storagerProducts") || "[]");
+        setProducts(saved);
+    }, []);
 
     return (
-        <div className="border w-full mx-auto min-h-100 p-10 h-auto " >
+        <div className="border  w-full mx-auto min-h-screen p-10 h-auto">
 
-            <form onSubmit={handleSubmit} className="border w-[35%] mx-auto  flex items-start cursor-pointer  *:p-2 justify-center flex-col gap-7 p-5 rounded-sm min-h-150 h-auto mb-40  " >
-                <label htmlFor="name">
-                    nomi:
-                    <input type="text" className="outline-0 px-1 cursor-pointer  " id="name" name="productsName" placeholder="mahsulot nomini kiriting.." required />
+            {
+                showModal && <Modal setProducts={setProducts} modalCardId={modalCardId} setSHowmodal={setSHowmodal} />
+            }
+            <form onSubmit={handleSubmit} className="border w-[35%] mx-auto flex flex-col gap-4 p-5 rounded-md mb-10">
+                <label>
+                    Nomi:
+                    <input
+                        value={nomi}
+                        onChange={(e) => setNomi(e.target.value)}
+                        className="border w-full p-1"
+                        type="text"
+                        required
+                        name="nomi"
+                    />
                 </label>
-
-                <label htmlFor="categoryId">
-                    mahsulot unikal raqami:
-                    <input type="text" className="outline-0 px-1 cursor-pointer    " id="categoryId" name="category" placeholder="mahsulot unikal raqamini kiriting.." required />
+                <label>
+                    Kategoriya unikal raqami:
+                    <input
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
+                        className="border w-full p-1"
+                        type="text"
+                        required
+                        name="categoryId"
+                    />
                 </label>
-
-
-
-                <label htmlFor="price">
-                    mahsulot narxi:
-                    <input type="text" className="outline-0 px-1 cursor-pointer " id="price" name="price" placeholder="mahsulot narxini kiriting.." required />
+                <label>
+                    Narx:
+                    <input
+                        value={price}
+                        onChange={(e) => setPrice(Number(e.target.value))}
+                        className="border w-full p-1"
+                        type="number"
+                        required
+                        min={1}
+                        name="price"
+                    />
                 </label>
-
-
-                <textarea id="description" className="min-w-100 border max-w-100 rounded-sm outline-0 px-1 cursor-pointer min-h-30 max-h-30 " name="description" placeholder="mahsulot haqida qisqacha tavsif..." >
-
-                </textarea>
-
-                <label htmlFor="createdAt">
-                    mahsulot yaratilgan vaqti:
-                    <input type="date" className="outline-0 px-1 cursor-pointer " id="createdAt" name="createdAt" placeholder="mahsulot yaratilgan vaqti..." />
+                <label>
+                    Tavsif:
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="border min-w-full max-w-full min-h-20 max-h-20 w-full p-1"
+                        required
+                        name="description"
+                    ></textarea>
                 </label>
-
-
-
-                <label htmlFor="updatedAt">
-                    mahsulot yangilangan vaqti:
-                    <input type="date" className="outline-0 px-1 cursor-pointer " id="updatedAt" name="updatedAt" placeholder="mahsulot yangilanган vaqti..." />
+                <label>
+                    Yaratilgan vaqti:
+                    <input
+                        value={createdAt}
+                        onChange={(e) => setCreatedAt(e.target.value)}
+                        className="border w-full p-1"
+                        type="date"
+                        required
+                        name="createdAt"
+                    />
                 </label>
-
-
-
-
-                <button className=" cursor-pointer self-center w-30 rounded-sm hover:bg-green-400 bg-green-500   " >
-                    kiritish
+                <label>
+                    Yangilangan vaqti:
+                    <input
+                        value={updatedAt}
+                        onChange={(e) => setUpdatedAt(e.target.value)}
+                        className="border w-full p-1"
+                        type="date"
+                        required
+                        name="updatedAt"
+                    />
+                </label>
+                <button type="submit" className="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                    Kiritish
                 </button>
-
             </form>
 
 
-            <div className="w-full min-h-300 h-auto p-20 border rounded-sm grid grid-cols-3 gap-4" >
 
-                {
-                    products.length === 0 ? <h1 className="text-center text-[20px] text-white/50 " >mahsulotlar mavjud emas...</h1> :products.map((item) => (
-                        <CardMaps key={item.id} item={item} />
-
-                    ))
-
-                }
-
-
-
-
-
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {products.length === 0 ? (
+                    <h1 className="text-center col-span-full">Mahsulotlar mavjud emas...</h1>
+                ) : (
+                    products.map((item) => <CardMaps setCardModalId={setCardModalId} setSHowmodal={setSHowmodal} handlerDelete={handlerDelete} key={item.id} item={item} />)
+                )}
             </div>
 
-
         </div>
-    )
+    );
 }
 
-export default Products
+export default Products;
