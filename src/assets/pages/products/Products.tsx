@@ -97,7 +97,6 @@ function Products() {
         <div className="w-full mx-auto min-h-screen p-10 h-auto">
             {showModal && <Modal setProducts={setProducts} modalCardId={modalCardId} setSHowmodal={setSHowmodal} />}
 
-            {/* ASOSIY QO'SHISH FORMASI */}
             <form onSubmit={handleSubmit} className="*:hover:bg-white/20 bg-white/10 *:duration-120 *:rounded-sm *:p-1 w-[35%] mx-auto flex flex-col gap-4 p-5 rounded-md mb-10 shadow-lg">
                 <label>Nomi: <input value={nomi} onChange={(e) => setNomi(e.target.value)} className="w-full p-1 bg-transparent border-b outline-none" type="text" required name="nomi" /></label>
                 <label>Kategoriya: <input value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full p-1 bg-transparent border-b outline-none" type="text" required name="categoryId" /></label>
@@ -108,17 +107,15 @@ function Products() {
                 <button type="submit" className="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition">Kiritish</button>
             </form>
 
-            {/* SEARCH */}
             <div className="w-full flex items-center mx-auto rounded-sm duration-120 hover:bg-white/20 cursor-pointer h-14 px-10 justify-end gap-2 mb-5">
                 <input onChange={searchItem} type="text" placeholder="search..." className="w-full px-2 py-2 outline-0 bg-transparent" />
                 <button className="p-1"><CiSearch size={25} /></button>
             </div>
 
-            {/* SORT FORMASI (updatedAt bilan) */}
             <div className="w-auto mx-auto flex items-center rounded-sm duration-120 hover:bg-white/20 cursor-pointer h-14 px-10 justify-center gap-2 mb-5">
                 <form onSubmit={sorted} className="flex items-center gap-4">
                     <input type="text" placeholder="name" name="productsName" className="w-32 px-2 py-2 outline-0 bg-transparent border-b border-white/30" />
-                    <input type="number" placeholder="price" name="price" className="w-24 px-2 py-2 outline-0 bg-transparent border-b border-white/30" />
+                    <input type="number" min={0} placeholder="price" name="price" className="w-24 px-2 py-2 outline-0 bg-transparent border-b border-white/30" />
                     <input type="date" title="Created At" name="createdAt" className="w-32 px-2 py-2 outline-0 bg-transparent border-b border-white/30" />
                     <input type="date" title="Updated At" name="updatedAt" className="w-32 px-2 py-2 outline-0 bg-transparent border-b border-white/30" />
                     <button className="px-8 rounded-sm bg-green-600 hover:bg-green-500 p-1 text-white">sort</button>
@@ -126,7 +123,6 @@ function Products() {
                 </form>
             </div>
 
-            {/* GRID */}
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayProducts.length === 0 ? (
                     <h1 className="text-center col-span-full">Mahsulotlar topilmadi...</h1>
