@@ -13,6 +13,9 @@ function App() {
         {/* <Navbar /> */}
         {element}
       </div>
+      <footer className="bg-blue-500 p-10">
+        <h2>footer</h2>
+      </footer>
       <ToastContainer limit={2} theme="colored" autoClose={3000} pauseOnHover={false} />
     </div>
   )
